@@ -9,7 +9,7 @@ import { fetchAllAccountData } from '@common/api/accounts';
 import BN from 'bn.js';
 import { defaultHeaders, fetchFromSidecar } from '@common/api/fetch';
 
-const DEFAULT_POLL_RATE = 60000;
+const DEFAULT_POLL_RATE = 10000;
 
 export const apiRevalidation = atom({
   key: 'api.revalidation',
