@@ -122,7 +122,7 @@ function useSendForm({
         setSubmitting(false);
       }
     }
-  }, [previous, selectedAsset]);
+  }, [setAssetError, assetError, isSubmitting, setSubmitting, previous, selectedAsset]);
 
   const isStx = selectedAsset?.type === 'stx';
 

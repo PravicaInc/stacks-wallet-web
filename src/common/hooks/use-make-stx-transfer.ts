@@ -74,6 +74,11 @@ export function useMakeTransferEffect({
       }
     }
   }, [
+    asset?.type,
+    handleMakeFtTransaction,
+    isActive,
+    notLoaded,
+    setTransaction,
     amount,
     recipient,
     setIsLoading,
