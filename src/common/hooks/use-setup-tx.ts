@@ -4,6 +4,7 @@ import {
   transactionPayloadStore,
   postConditionsStore,
   requestTokenStore,
+  isUnauthorizedTransactionStore,
 } from '@store/recoil/transaction';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 import {
@@ -24,6 +25,8 @@ import {
   deserializePostCondition,
   BufferReader,
 } from '@stacks/transactions';
+import { getRequestOrigin, StorageKey } from '@extension/storage';
+import { verifyTxRequest } from '@common/transaction-utils';
 
 export const useSetupTx = () => {
   const currentAccountStxAddress = useRecoilValue(currentAccountStxAddressStore);
@@ -31,21 +34,34 @@ export const useSetupTx = () => {
   const location = useLocation();
 
   const decodeRequest = useRecoilCallback(
-    ({ set }) => () => {
+    ({ set, snapshot }) => async () => {
       const urlParams = new URLSearchParams(location.search);
       const requestToken = urlParams.get('request');
-      if (requestToken) {
-        set(requestTokenStore, requestToken);
-      } else if (!requestToken) {
-        console.error('Unable to find contract call parameter');
+      if (!requestToken) {
         throw 'Invalid transaction request parameter';
+      }
+      const wallet = await snapshot.getPromise(walletStore);
+      const origin = getRequestOrigin(StorageKey.transactionRequests, requestToken);
+      if (!wallet || !origin) return;
+
+      try {
+        // This function throws if tx is invalid
+        await verifyTxRequest({
+          requestToken,
+          wallet,
+          appDomain: origin,
+        });
+        set(requestTokenStore, requestToken);
+      } catch (error) {
+        console.error(error);
+        set(isUnauthorizedTransactionStore, true);
       }
     },
     [location.search]
   );
 
   useEffect(() => {
-    decodeRequest();
+    void decodeRequest();
   }, [decodeRequest]);
 
   const handleNetworkSwitch = useRecoilCallback(
