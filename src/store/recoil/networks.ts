@@ -26,7 +26,7 @@ export const defaultNetworks: Networks = {
     chainId: ChainID.Testnet,
   },
   mocknet: {
-    url: 'https://mocknet-api.bootcamp.stacksmena.org/',
+    url: 'https://mocknet-api.bootcamp.stacksmena.org',
     name: 'Mocknet',
     chainId: ChainID.Testnet,
   },
