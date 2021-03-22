@@ -25,6 +25,11 @@ export const defaultNetworks: Networks = {
     name: 'Testnet',
     chainId: ChainID.Testnet,
   },
+  mocknet: {
+    url: 'https://mocknet-api.bootcamp.stacksmena.org/',
+    name: 'Mocknet',
+    chainId: ChainID.Testnet,
+  },
   localnet: {
     url: 'http://localhost:3999',
     name: 'Localnet',
